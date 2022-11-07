@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spring-boot-mongo
+  labels:
+    app.kubernetes.io/name: spring-boot-mongo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: spring-boot-mongo
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: spring-boot-mongo
+    spec:
+      containers:
+        - name: spring-boot-mongo
+          image: joostvdgtanzu/spring-boot-mongo:0.1.0
+          env:
+            - name: SERVICE_BINDING_ROOT
+              value: "/bindings"
+          ports:
+            - containerPort: 8080
+              name: http-web-svc
+          volumeMounts:
+            - mountPath: /bindings/db
+              name: secret-volume
+              readOnly: true
+      volumes:
+        - name: secret-volume
+          projected:
+            defaultMode: 420
+            sources:
+              - secret:
+                  name: trp-cosmosdb-mongo-bindable-08
