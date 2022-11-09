@@ -23,6 +23,17 @@ spec:
           ports:
             - containerPort: 8080
               name: http-web-svc
+          livenessProbe:
+            httpGet:
+              port: 8080
+              path: /actuator/health/liveness
+            initialDelaySeconds: 90
+            periodSeconds: 5
+          readinessProbe:
+            httpGet:
+              port: 8080
+              path: /actuator/health/readiness
+            initialDelaySeconds: 15
           volumeMounts:
             - mountPath: /bindings/db
               name: secret-volume
